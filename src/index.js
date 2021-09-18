@@ -1,18 +1,54 @@
-import React, { useContext } from 'react'
+import React, {Component, useEffect, useState} from 'react'
 import ReactDOM from "react-dom";
-const MyContext = React.createContext();
 
 const App = () => {
-    return (
-        <MyContext.Provider value="Hello world">
-            <Child />
-        </MyContext.Provider>
-    );
+    const [value, setValue] = useState(0);
+    const [visible, setVisible] = useState(true);
+    if (visible) {
+        return (
+            <div>
+                <button
+                    onClick={() => setValue((v) => v + 1)}>+
+                </button>
+                <button
+                    onClick={() => setVisible(false)}>hide
+                </button>
+                <HookCounter value={value} />
+                <ClassCounter value={value} />
+
+            </div>
+        );
+    } else {
+        return (
+            <button
+            onClick={() => setVisible(true)}>show</button>
+        );
+    }
 };
 
-const Child = () => {
-    const value = useContext(MyContext);
-    return <p>{value}</p>;
+const HookCounter = ({ value }) => {
+    useEffect(() => {
+        console.log('useEffect');
+        return () => console.log('clear');  // is used before next useEffect call, incl before component did unmount
+    },
+        [value]);  // useEffect will be called only if value will be changed
+    return <p>{value}</p>
 }
 
-ReactDOM.render( <App />, document.getElementById('root'));
+class ClassCounter extends Component{
+    componentDidMount() {
+        console.log('class: mount')
+    }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+       console.log('class: update')
+    }
+    componentWillUnmount() {
+        console.log('class: unmount')
+    }
+    render() {
+        return <p>{this.props.value}</p>
+    }
+}
+
+
+ReactDOM.render(<App/>, document.getElementById('root'));
