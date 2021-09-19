@@ -24,16 +24,20 @@ const App = () => {
     }
 };
 
-const PlanetInfo = ({id}) => {
+const usePlanetInfo = (id) => {
     const [planetName, setPlanetName] = useState(null)
     useEffect(() => {
-            let cancelled = false;
-            fetch(`https://swapi.dev/api/planets/${id}`)
-                .then(res => res.json())
-                .then(data => !cancelled && setPlanetName(data.name));
-            return () => cancelled = true;
-        },[id]);
+        let cancelled = false;
+        fetch(`https://swapi.dev/api/planets/${id}`)
+            .then(res => res.json())
+            .then(data => !cancelled && setPlanetName(data.name));
+        return () => cancelled = true;
+    },[id]);
+    return planetName;
+};
 
+const PlanetInfo = ({id}) => {
+    const planetName = usePlanetInfo(id);
     return <p>{id} - {planetName}</p>
 }
 
