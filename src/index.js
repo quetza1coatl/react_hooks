@@ -15,6 +15,7 @@ const App = () => {
                 </button>
                 <HookCounter value={value} />
                 <ClassCounter value={value} />
+                <Notification />
 
             </div>
         );
@@ -33,6 +34,19 @@ const HookCounter = ({ value }) => {
     },
         [value]);  // useEffect will be called only if value will be changed
     return <p>{value}</p>
+}
+
+const Notification = () => {
+    const [visible, setVisible] = useState(true);
+    useEffect(() => {
+        const timeout = setTimeout(() => setVisible(false), 2500);
+        return () => clearTimeout(timeout)
+    }, []);
+    return (
+        <div>
+            { visible && <p>Hello</p>}
+        </div>
+    );
 }
 
 class ClassCounter extends Component{
